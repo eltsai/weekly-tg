@@ -1,0 +1,6 @@
+[submodule "resume"]
+	path = resume
+	url = https://github.com/mwhite/resume
+[submodule "weekly"]
+	path = weekly
+	url = https://github.com/ruanyf/weekly.git
