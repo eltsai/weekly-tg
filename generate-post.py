@@ -14,29 +14,37 @@ import sys
 import os
 
 post_dir    = './weekly/docs/' 
-html_dir    = './resume/'
+html_dir    = './tmp/'
 
-def make():
-    ret = os.system( "cd resume&&GRAVATAR_OPTION=--no-gravatar make" )
+# def make():
+#     ret = os.system( "cd resume&&GRAVATAR_OPTION=--no-gravatar make" )
+
+def convert(file_name):
+    """
+    Convert markdown file to html
+    """
+    os.system('cd '+ html_dir + '&&' + 'pandoc ' + file_name +  ' -f markdown -t html -s -o ' + file_name + '.html && cd ..')
 
 
 def convertMD(file_name):
     """
     Read markdown file from git submodule dir: weekly/docs
-    Extract header from post, add tg channel link to the end of the post
+    Extract title from post, add tg channel link to the end of the post
     Convert content from md to html
-    rtype: str (header), str (html content)
+    type: str (filename)
+    rtype: str (title)
     """
     try:
         f = open(post_dir + file_name, 'r')
         contents = f.readlines()
+        #print(contents[-10:])
         f.close()
     except FileNotFoundError:
         print('File {} does not exist'.format(file_name), file=sys.stderr)
         sys.exit(1)
         
-    header = contents[0][2:-1]
-    index = contents.index('微信搜索"__阮一峰的网络日志__"或者扫描二维码，即可订阅。\n')
+    title = contents[0][2:-1]
+    index = contents.index('微信搜索“__阮一峰的网络日志__”或者扫描二维码，即可订阅。\n')
     contents.insert(index+1, '\nTelegram频道[科技爱好者周刊](https://t.me/scitech_fans)同步更新，欢迎关注。\n')
 
 
@@ -44,24 +52,42 @@ def convertMD(file_name):
         nf.write(''.join(contents[2:]))
     nf.close()
 
-    make()
+    convert(file_name)
+
+    return title
 
 
 
 
-
-
-def generatePost():
+def generatePost(title, file_name):
     telegraph = Telegraph()
 
     telegraph.create_account(short_name='E-Tasi')
 
-    response = telegraph.create_page(
-        title='Hey',
-        author_name='E-Tsai',
-        html_content='<p>Hello, world!</p>'
-    )
 
+    with open(html_dir + file_name + '.html', 'r') as gf:
+        html = gf.readlines()
+    gf.close()
+
+    cut = ''.join(html[10:-2])
+    fixed = cut.replace('<div', '<p').\
+                replace('</div', '</p').\
+                replace('<h2', '<h3').\
+                replace('</h2', '</h3').\
+                replace('<span', '<p').\
+                replace('</span', '</p')
+                # replace('<blockquote>', '').\
+                # replace('</blockquote>', '')
+
+    # with open(html_dir + file_name + 'n.html', 'w') as nf:
+    #     nf.write(fixed)
+    # nf.close()
+
+    response = telegraph.create_page(
+        title = title,
+        author_name ='ruanyf ( 阮一峰 ) 著 E-Tsai 搬运',
+        html_content = fixed
+    )
     print('https://telegra.ph/{}'.format(response['path']))
 
 def main():
@@ -75,7 +101,8 @@ def main():
 
     for i in range(start, end):
         file_name = 'issue-'+str(i)+'.md'
-        convertMD(file_name)
+        
+        generatePost(convertMD(file_name), file_name)
 
     return 0
     

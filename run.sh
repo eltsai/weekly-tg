@@ -1,3 +1,4 @@
 #!/bin/bash
 
-proxychains python generate-post.py 
+proxychains python generate-post.py 29 30
+
