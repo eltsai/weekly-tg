@@ -1,3 +1,3 @@
 #!/bin/bash
 
-proxychains python generate-post.py "$1" "$2"
+proxychains python scripts/generate-post.py "$1" "$2"

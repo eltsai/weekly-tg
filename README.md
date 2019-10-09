@@ -80,9 +80,9 @@ Telegraph提供接口：`content`/`html_content`，接受DOM Node array，详情
 
 `a`, `aside`, `b`, `blockquote`, `br`, `code`, `em`, `figcaption`, `figure`, `h3`, `h4`, `hr`, `i`, `iframe`, `img`, `li`, `ol`, `p`, `pre`, `s`, `strong`, `u`, `ul`, `video`.
 
-- [ ] 链接最长匹配
+- [x] 链接最长匹配
 - [ ] 引用block缩进
-- [ ] 列表
+- [x] 列表：weekly中使用`--`表示"by"，所以列表有问题，已经删除相关parsing.
 
  
 
