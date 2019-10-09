@@ -1,5 +1,6 @@
 
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #author='E-Tsai'
 
 """
@@ -8,13 +9,17 @@ To telegraph channel: https://t.me/scitech_fans
 """
 
 from telegraph import Telegraph
+from colorama import Fore, Style
 import subprocess
 import argparse
 import sys
 import os
 
+from md2html import * 
+
 post_dir    = './weekly/docs/' 
 html_dir    = './tmp/'
+title = 'place holder'
 
 # def make():
 #     ret = os.system( "cd resume&&GRAVATAR_OPTION=--no-gravatar make" )
@@ -32,7 +37,7 @@ def convertMD(file_name):
     Extract title from post, add tg channel link to the end of the post
     Convert content from md to html
     type: str (filename)
-    rtype: str (title)
+    rtype: str (title), str (html content)
     """
     try:
         f = open(post_dir + file_name, 'r')
@@ -40,57 +45,39 @@ def convertMD(file_name):
         #print(contents[-10:])
         f.close()
     except FileNotFoundError:
-        print('File {} does not exist'.format(file_name), file=sys.stderr)
+        print('File {} does not exist'.format(file_name))
         sys.exit(1)
         
     title = contents[0][2:-1]
+    # Add telegram channel promt
     index = contents.index('微信搜索“__阮一峰的网络日志__”或者扫描二维码，即可订阅。\n')
     contents.insert(index+1, '\nTelegram频道[科技爱好者周刊](https://t.me/scitech_fans)同步更新，欢迎关注。\n')
 
-
-    with open(html_dir + file_name, 'w') as nf:
-        nf.write(''.join(contents[2:]))
-    nf.close()
-
-    convert(file_name)
-
-    return title
+    return html(''.join(contents[2:]).rstrip('\n'))
 
 
 
 
-def generatePost(title, file_name):
+def generatePost(html_content):
+    """
+    Create telegraph page
+    Using telegraph API: https://telegra.ph/api
+    """
     telegraph = Telegraph()
-
     telegraph.create_account(short_name='E-Tasi')
-
-
-    with open(html_dir + file_name + '.html', 'r') as gf:
-        html = gf.readlines()
-    gf.close()
-
-    cut = ''.join(html[10:-2])
-    fixed = cut.replace('<div', '<p').\
-                replace('</div', '</p').\
-                replace('<h2', '<h3').\
-                replace('</h2', '</h3').\
-                replace('<span', '<p').\
-                replace('</span', '</p')
-                # replace('<blockquote>', '').\
-                # replace('</blockquote>', '')
-
-    # with open(html_dir + file_name + 'n.html', 'w') as nf:
-    #     nf.write(fixed)
-    # nf.close()
 
     response = telegraph.create_page(
         title = title,
         author_name ='ruanyf ( 阮一峰 ) 著 E-Tsai 搬运',
-        html_content = fixed
+        html_content = html_content
     )
-    print('https://telegra.ph/{}'.format(response['path']))
+    print(Fore.GREEN + 'https://telegra.ph/{}'.format(response['path']) + Fore.WHITE)
 
 def main():
+    """
+    Read starting and ending index from args
+    Convert post and generate telegraph page 
+    """
     parser = argparse.ArgumentParser(description='Range of markdown file index')
     parser.add_argument("start", action="store", type=int, help="starting index of markdown file")
     parser.add_argument("end", action="store", type=int, help="ending index of markdown file")
@@ -101,8 +88,7 @@ def main():
 
     for i in range(start, end):
         file_name = 'issue-'+str(i)+'.md'
-        
-        generatePost(convertMD(file_name), file_name)
+        generatePost(convertMD(file_name))
 
     return 0
     
