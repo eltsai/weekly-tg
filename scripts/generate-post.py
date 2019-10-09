@@ -66,13 +66,16 @@ def generatePost(html_content):
     telegraph.create_account(short_name='E-Tasi')
 
     global title
-    
+
     response = telegraph.create_page(
         title = title,
         author_name ='ruanyf ( 阮一峰 ) 著 E-Tsai 搬运',
         html_content = html_content
     )
-    print(Fore.GREEN + 'https://telegra.ph/{}'.format(response['path']) + Fore.WHITE)
+
+    url = 'https://telegra.ph/{}'.format(response['path'])
+    print(Fore.GREEN + url + Fore.WHITE)
+    # os.system('google-chrome '+ url)
 
 def main():
     """

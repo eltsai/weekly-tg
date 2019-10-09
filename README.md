@@ -67,6 +67,10 @@ python generate-post.py [starting-index] [ending-index]
 
 使用proxychains运行此python脚本。
 
+## 合作
+
+这个仓库的代码的目的是让tg channel管理员能够相对轻松地搬运博文，但是它也可以成为从markdown源文件部署tg channel推送的一个项目。非常欢迎有意贡献代码的小伙伴们参与！
+
 ## 问题
 
 
@@ -78,11 +82,40 @@ python generate-post.py [starting-index] [ending-index]
 
 Telegraph提供接口：`content`/`html_content`，接受DOM Node array，详情见[这里](https://telegra.ph/api#Node)：它只接受有限的tags: 
 
-`a`, `aside`, `b`, `blockquote`, `br`, `code`, `em`, `figcaption`, `figure`, `h3`, `h4`, `hr`, `i`, `iframe`, `img`, `li`, `ol`, `p`, `pre`, `s`, `strong`, `u`, `ul`, `video`.
+`a`, `aside`, `b`, `blockquote`, `br`, `code`, `em`, `figcaption`, `figure`, `h3`, `h4`, `hr`, `i`, `iframe`, `img`, `li`, `ol`, `p`, `pre`, `s`, `strong`, `u`, `ul`, `video`. 这样看来为它写一个专用的parser比较可行。
 
 - [x] 链接最长匹配
-- [ ] 引用block缩进
+- [x] 引用block缩进: 直接复制也有这个问题，这是tg的渲染问题。
 - [x] 列表：weekly中使用`--`表示"by"，所以列表有问题，已经删除相关parsing.
+
+
+
+Parsing List:
+
+- [ ] `a`
+- [ ]  `aside`
+- [x]  `b`
+- [x]  `blockquote`
+- [ ]  `br`
+- [x]  `code`
+- [ ]  `em`
+- [ ]  `figcaption`
+- [ ]  `figure`
+- [x]  `h3`,  `h4`
+- [ ]  `hr`
+- [ ]  `i`
+- [ ]  `iframe`
+- [x]  `img`
+- [x]  `li`, `ol`
+- [ ]  `p`
+- [ ]  `pre`
+- [ ]  `s`
+- [ ]  `strong`
+- [ ]  `u` 
+- [ ] `ul`
+- [ ]  `video`
+
+
 
  
 

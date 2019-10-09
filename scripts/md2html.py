@@ -119,6 +119,9 @@ def quotes(text):
 
     return pat.sub(repl=rep, string=text)
 
+def code(text):
+    return re.sub(r'```([^\n]+)```', r'<code>\g<1></code>', text)
+
 def html(corpus):
     """
     Converts raw Markdown into HTML.
@@ -129,19 +132,23 @@ def html(corpus):
     >>> html(bolditalic)
     '<p><strong><em>hello</em></strong></p>'
     """
-    return paragraphs(quotes(lists(italics(bold(headers(inline_links(images(corpus)))))))).replace('<head>', '').replace('</head>', '')
+    return paragraphs(quotes(lists(italics(bold(headers(inline_links(images(code(corpus))))))))).replace('<head>', '').replace('</head>', '')
 
 
 def run():
     """
     Command line tool to convert Markdown file into HTML.
     """
-    import argparse
-    parser = argparse.ArgumentParser(description='Convert Markdown into HTML.')
-    parser.add_argument('FILE')
-    args = parser.parse_args()
-    with open(args.FILE, 'r') as file_obj:
-        markdown = file_obj.read().rstrip('\n')
+    # import argparse
+    # parser = argparse.ArgumentParser(description='Convert Markdown into HTML.')
+    # parser.add_argument('FILE')
+    # args = parser.parse_args()
+    # with open(args.FILE, 'r') as file_obj:
+    #     text = file_obj.read()
+    text = """
+    ``` FILE * test_file = fopen("/tmp/test.txt", "w+"); ```
+    """
+    markdown = text.rstrip('\n')
     print(html(markdown))
 
 
