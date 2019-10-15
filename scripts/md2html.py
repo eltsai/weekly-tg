@@ -44,7 +44,7 @@ def images(corpus):
     'This is an <img src="http://example.com/" alt="image">.'
     """
     with_titles = re.sub(r'\!\[(.*)\]\((\S*)[ \t]*(".*")\)', r'<a href="\g<2>" title=\g<3>>\g<1></a>', corpus)
-    all_inline_links = re.sub(r'\!\[(.*)\]\((.*)\)', r'<img src="\g<2>" alt="\g<1>">', with_titles)
+    all_inline_links = re.sub(r'\!\[(.*)\]\((.*)\)', r'<img src="\g<2>">', with_titles)
     return all_inline_links
 
 
@@ -67,13 +67,13 @@ def lists(corpus):
 
     # separate unordered and ordered lists
     separated = re.sub(r'</ul>\n(.*)<ol>', r'</ul>\n\n\g<1><ol>', corpus)
-    separated = re.sub(r'</ol>\n(.*)<ul>', r'</ol>\n\n\g<1><ul>', separated)
+    #separated = re.sub(r'</ol>\n(.*)<ul>', r'</ol>\n\n\g<1><ul>', separated)
 
     # remove back-to-back </ul><ul>
     ul_finished = re.sub(r'</ul>\n(.*)<ul>', '\n', separated)
     # remove back-to-back </ul><ul>
-    ol_ul_finished = re.sub(r'</ol>\n(.*)<ol>', '\n', ul_finished)
-    return ol_ul_finished
+    #ol_ul_finished = re.sub(r'</ol>\n(.*)<ol>', '\n', ul_finished)
+    return ul_finished
 
 
 def italics(corpus):
@@ -119,8 +119,22 @@ def quotes(text):
 
     return pat.sub(repl=rep, string=text)
 
-def code(text):
+def code_block(text):
     return re.sub(r'```([^\n]+)```', r'<code>\g<1></code>', text)
+
+def code(text):
+    
+    pat = re.compile(r"(`(.*)`)\1", re.DOTALL)
+
+    def rep(match):
+        tags = match.group(1)  # type:str
+        content = match.group(2)
+
+        tag_start = '<code>'
+        tag_end = '</code>'
+        return tag_start + content + tag_end
+
+    return pat.sub(repl=rep, string=text)
 
 def html(corpus):
     """

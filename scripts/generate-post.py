@@ -24,11 +24,17 @@ title = ''
 # def make():
 #     ret = os.system( "cd resume&&GRAVATAR_OPTION=--no-gravatar make" )
 
-def convert(file_name):
+def save(content, file_name):
     """
     Convert markdown file to html
     """
-    os.system('cd '+ html_dir + '&&' + 'pandoc ' + file_name +  ' -f markdown -t html -s -o ' + file_name + '.html && cd ..')
+    try:
+        f = open(file_name, 'w')
+        f.write(content)
+        f.close()
+    except FileNotFoundError:
+        print('Cant open file {}'.format(file_name))
+        sys.exit(1)
 
 def convertMD(file_name):
     """
@@ -49,10 +55,13 @@ def convertMD(file_name):
     global title
     title = contents[0][2:-1]
     # Add telegram channel promt
-    index = contents.index('微信搜索“**阮一峰的网络日志**”或者扫描二维码，即可订阅。\n')
+    index = contents.index('微信搜索“阮一峰的网络日志”或者扫描二维码，即可订阅。\n')
     contents.insert(index+1, '\nTelegram频道[科技爱好者周刊](https://t.me/scitech_fans)同步更新，欢迎关注。\n')
 
-    return html(''.join(contents[2:]).rstrip('\n'))
+    generated_html = html(''.join(contents[2:]).rstrip('\n'))
+    
+    save(generated_html, html_dir + file_name)
+    return generated_html
 
 
 
