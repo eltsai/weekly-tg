@@ -49,7 +49,7 @@ def convertMD(file_name):
     global title
     title = contents[0][2:-1]
     # Add telegram channel promt
-    index = contents.index('微信搜索“__阮一峰的网络日志__”或者扫描二维码，即可订阅。\n')
+    index = contents.index('微信搜索“**阮一峰的网络日志**”或者扫描二维码，即可订阅。\n')
     contents.insert(index+1, '\nTelegram频道[科技爱好者周刊](https://t.me/scitech_fans)同步更新，欢迎关注。\n')
 
     return html(''.join(contents[2:]).rstrip('\n'))
