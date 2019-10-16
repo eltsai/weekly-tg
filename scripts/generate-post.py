@@ -18,7 +18,6 @@ from md2html import *
 
 post_dir    = './weekly/docs/' 
 html_dir    = './tmp/'
-title = ''
 
 
 # def make():
@@ -28,6 +27,7 @@ def save(content, file_name):
     """
     Convert markdown file to html
     """
+    os.system('mkdir -p ' + html_dir)
     try:
         f = open(file_name, 'w')
         f.write(content)
@@ -47,12 +47,10 @@ def convertMD(file_name):
     try:
         f = open(post_dir + file_name, 'r')
         contents = f.readlines()
-        #print(contents[-10:])
         f.close()
     except FileNotFoundError:
         print('File {} does not exist'.format(file_name))
         sys.exit(1)
-    global title
     title = contents[0][2:-1]
     # Add telegram channel promt
     index = contents.index('微信搜索“阮一峰的网络日志”或者扫描二维码，即可订阅。\n')
@@ -61,12 +59,12 @@ def convertMD(file_name):
     generated_html = html(''.join(contents[2:]).rstrip('\n'))
     
     save(generated_html, html_dir + file_name)
-    return generated_html
+    return (generated_html, title)
 
 
 
 
-def generatePost(html_content):
+def generatePost(content_tuple):
     """
     Create telegraph page
     Using telegraph API: https://telegra.ph/api
@@ -74,7 +72,8 @@ def generatePost(html_content):
     telegraph = Telegraph()
     telegraph.create_account(short_name='E-Tasi')
 
-    global title
+    html_content = content_tuple[0]
+    title = content_tuple[1]
 
     response = telegraph.create_page(
         title = title,

@@ -1,4 +1,4 @@
-# weekly-tg
+weekly-tg
 
 *自动生成[科技爱好者周刊](https://github.com/ruanyf/weekly) [telegram channel](https://t.me/scitech_fans)推送*， see [issue #885](https://github.com/ruanyf/weekly/issues/885).
 
@@ -76,6 +76,10 @@ python generate-post.py [starting-index] [ending-index]
 
 ### 1. Markdown => html
 
-我尝试了[这个仓库](https://github.com/mwhite/resume) (即[pandoc](https://pandoc.org/getting-started.html)) 和[python模块markdown](https://www.drupal.org/project/markdown) ([命令行](http://tuxdiary.com/2016/06/30/markdown-to-html-terminal/))，但是它们对引用的处理都有问题，左侧没有横杠出现/横岗出现得一点都不美观，缩进也有点问题，我觉得这个小问题 ~~可以忍受~~ 有点不能忍受。可能我们需要寄希望于[typora](https://github.com/typora)开发出[高级命令行功能](https://github.com/typora/typora-issues/issues/1999)了。
+我尝试了[这个仓库](https://github.com/mwhite/resume) (即[pandoc](https://pandoc.org/getting-started.html)) 和[python模块markdown](https://www.drupal.org/project/markdown) ([命令行](http://tuxdiary.com/2016/06/30/markdown-to-html-terminal/))，但是它们对引用的处理都有问题，左侧没有横杠出现/横岗出现得一点都不美观，缩进也有点问题，我觉得这个小问题 ~~可以忍受~~ 有点不能忍受。~~可能我们需要寄希望于[typora](https://github.com/typora)开发出[高级命令行功能](https://github.com/typora/typora-issues/issues/1999)了。~~ 我决定尝试一下使用re模块，就像[这个repo](https://github.com/linheimx/Husky)一样。
 
-我决定尝试一下使用re模块，就像[这个repo](https://github.com/linheimx/Husky)一样。
+Telegraph提供接口：`content`/`html_content`，接受DOM Node array，详情见[这里](https://telegra.ph/api#Node)：它只接受有限的tags: `a`, `aside`, `b`, `blockquote`, `br`, `code`, `em`, `figcaption`, `figure`, `h3`, `h4`, `hr`, `i`, `iframe`, `img`, `li`, `ol`, `p`, `pre`, `s`, `strong`, `u`, `ul`, `video`. 这样看来为它写一个专用的parser比较可行。
+
+- [x] 链接最长匹配 
+- [x] 引用block缩进: 直接复制也有这个问题，这是tg的渲染问题。 
+- [x] 列表：weekly中使用`--`表示"by"，所以列表有问题，已经删除相关parsing.
