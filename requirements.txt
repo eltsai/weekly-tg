@@ -5,4 +5,4 @@ idna==2.8
 pkg-resources==0.0.0
 requests==2.31.0
 telegraph==1.4.0
-urllib3==1.26.5
+urllib3==1.26.17
